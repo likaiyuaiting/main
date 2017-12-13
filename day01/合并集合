@@ -1,0 +1,40 @@
+#include<stdio.h>
+#include<stdlib.h>
+int main(void)
+{
+	int i,j=0,Date1[] = { 2, 3, 5, 7, 9 }, Date2[] = { 1, 4, 7, 8, 9, 10 },Date3[10],Date4[10];
+	int min;
+	for (i = 0; i < 10; i++)
+	{
+		i<5?Date3[i] = Date1[i]:Date3[i]=Date2[i-5];
+	}
+
+	for (i = 0; i < 10; i++)
+	{
+		min = Date3[i];
+		for (j = i; j<10; j++)
+		{
+			if (Date3[j]<min)
+				 min = Date3[j];
+		}
+		Date3[i] = min;
+	}
+
+	for (i = 0; i < 10; i++)
+	{
+		if (Date3[i]==Date3[i+1])
+		Date4[j++] = Date3[i];
+		else  Date4[j++] = Date3[i];
+	}
+	for (i = 0; i < 10; i++)
+		printf("%2d",Date3[i]);
+	printf("\n");
+
+
+	for (i = 0; i < j; i++)
+		printf("%2d", Date4[i]);
+	printf("\n");
+
+	system("pause");
+	return 0;
+}

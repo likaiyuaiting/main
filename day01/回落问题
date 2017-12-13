@@ -1,0 +1,20 @@
+//100米下落，每次反弹原高度的一般，第五次反弹高度
+#include<stdio.h>
+#include<stdlib.h>
+int fun(int n)
+{
+	int x;
+	if (n == 1)
+		x = 100;
+	x = fun(n-1)/2;
+	return x;
+}
+int main(void)
+{
+	int n;
+	printf("请输入想知道反弹次数n：");
+	scanf("%d",&n);
+	printf("%d",fun(n));
+	system("pause");
+	return 0;
+}

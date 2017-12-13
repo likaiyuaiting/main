@@ -1,0 +1,40 @@
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+int main()
+{
+	int i,j,a[5][4],b[5][4],c[4][5];
+
+	for (i = 0; i < 5;i++)
+	for (j = 0; j < 4; j++)
+		cin >> a[i][j];
+	
+	for (i = 0; i < 5; i++)
+	{
+		for (j = 0; j < 4; j++)
+			cout << a[i][j] << "\t";
+		cout << endl;
+	}
+
+	for (i = 0; i < 5; i++)
+	for (j = 0; j < 4; j++)
+		b[5][4]=a[i][j];
+
+	for (i = 0; i < 5; i++)
+	for (j = 0; j < 4; j++)
+		c[j][i]=a[i][j];
+
+	for (i = 0; i < 5; i++)
+	for (j = 0; j < 4; j++)
+		cin >> a[i][j];
+
+	for (i = 0; i < 5; i++)
+	{
+		for (j = 0; j < 4; j++)
+			cout<< a[i][j]<<"\t";
+		cout << endl;
+	}
+	system("pause");
+	return 0;
+}

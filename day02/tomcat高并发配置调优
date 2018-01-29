@@ -1,0 +1,19 @@
+最近部署的tomcat，里面放了一个apk提供给测试人员测试，而有一天压测的时候，他们一致反馈下载不了，结果查看日志才发现如下错误：
+
+INFO: Maximum number of threads (200) created for connector with address null and port 8091  
+
+才惊醒这个tomcat根本知识解压就使用的，配置都没动过，肯定不能支持高并发了。所以这里给出一个高并发的配置，当然百度一下也会发现很多类似的配置文章，
+其他的就不去管吧，反正这歌配置是本人亲测，特别是压力测试下是没问题的；
+
+    <Executor name="tomcatThreadPool"        # 配置TOMCAT共享线程池，NAME为名称　  
+              namePrefix="HTTP-8088-exec-"    # 线程的名字前缀，用于标记线程名称  
+              prestartminSpareThreads="true"  # executor启动时，是否开启最小的线程数  
+              maxThreads="5000"               # 允许的最大线程池里的线程数量，默认是200，大的并发应该设置的高一些，这里设置可以支持到5000并发  
+              maxQueueSize="100"              # 任务队列上限  
+              minSpareThreads="50"            # 最小的保持活跃的线程数量，默认是25.这个要根据负载情况自行调整了。太小了就影响反应速度，太大了白白占用资源  
+              maxIdleTime="10000"             # 超过最小活跃线程数量的线程，如果空闲时间超过这个设置后，会被关别。默认是1分钟。  
+     />  
+     
+         <Connector port="8088" protocol="org.apache.coyote.http11.Http11NioProtocol"  
+       connectionTimeout="5000" redirectPort="443" proxyPort="443" executor="tomcatThreadPool"  # 采用上面的共享线程池  
+       URIEncoding="UTF-8"/>  

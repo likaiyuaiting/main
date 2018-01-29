@@ -1,0 +1,17 @@
+tag:记录一下因断电引起mysql无法启动的问题以及结局过程。便于以后翻阅。
+
+1.背景：本地架设了一台CentOS7系统作为本地测试服务器使用，上面安装了mysql
+
+2.问题情境：前一段时间因为公司电压不稳，经常半夜断电，早上起来又得重新启动服务器，而启动mysql的时候就会报如下错误：
+
+STOPPING server from pid file /var/run/mysqld/mysqld.pid
+
+3.于是打开mysql的log日志观看：cat /var/log/mysqld.log，发现有如下报错：
+
+ /usr/local/mysql//libexec/mysqld: Can't create/write to file '/var/run/mysqld/mysqld.pid' (Errcode: 13)
+
+170331 15:23:19 [ERROR] Can't start server: can't create PID file: Permission denied
+
+4.解决方案：看log发现是这个mysqld.pid文件没有权限，于是添加一个权限即可：chown -R mysql /var/run/mysqld，但问题来了，输入权限以后提示文件不存在，于是自己建一个文件夹：mkdir -p mysql /var/run/mysqld,然后再次执行：chown -R mysql /var/run/mysqld，这样就可以了
+
+5.最后执行：service mysqld restart即可成功启动mysql。

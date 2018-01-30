@@ -1,0 +1,23 @@
+   注意：程序中有两个并发线程在修改Account对象，系统恰好在try-catch处执行线程切换，切换给另一个修改Account对象的线程，所以出现了问题。
+
+解决方案：
+    Java的多线程支持引入了同步监视器来解决这个问题，使用同步监视器的通用方法就是同步代码块。同步代码块的语法格式如下：
+    
+    synchronized(account){
+            if(account.getBalance()>=drawAmount){
+                System.out.println(getName()+":取钱成功！吐出钞票："+drawAmount);
+                try{
+                    Thread.sleep(1000);
+                }catch(InterruptedException e){
+                    e.printStackTrace();
+                }
+                account.setBalance(account.getBalance()-drawAmount);
+                System.out.println("\t余额为："+account.getBalance());
+            }else{
+                System.out.println(getName()+"取钱失败！余额不足！");
+            }
+        }
+后台输出：
+    老张:取钱成功！吐出钞票：800.0
+        余额为：200.0
+    老王取钱失败！余额不足！

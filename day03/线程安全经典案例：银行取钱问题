@@ -1,0 +1,46 @@
+银行取钱的基本流程基本上可以分为如下几个步骤。
+（1）用户输入账户、密码，系统判断用户的账户、密码是否匹配。
+（2）用户输入取款密码
+（3）系统判断账户余额是否大于取款余额
+（4）如果余额大于取款余额，则取钱成功；如果余额小于取款余额，则取钱失败。
+
+1、先定义一个账户类，该账户类封装了账号和余额两个实例变量。
+
+public class Account {
+    private String accountNo;
+    private double balance;
+    public Account() {
+
+    }
+    public Account(String accountNo, double balance) {
+        super();
+        this.accountNo = accountNo;
+        this.balance = balance;
+    }
+    public String getAccountNo() {
+        return accountNo;
+    }
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
+    }
+    public double getBalance() {
+        return balance;
+    }
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+    @Override
+    public int hashCode() {
+        return accountNo.hashCode();
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if(this==obj)
+            return true;
+        if(obj != null && obj.getClass() == Account.class){
+            Account target=(Account)obj;
+            return target.getAccountNo().equals(accountNo);
+        }
+        return false;
+    }
+}

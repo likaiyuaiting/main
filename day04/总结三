@@ -1,0 +1,43 @@
+2.2 #define
+
+2.1.1不带参数的宏定义
+
+#define 标识符 字符串
+
+#define PI 3.1415926
+
+注意：
+
+1.它的作用是在本程序中用指定的标识符PI来代替3.1415926
+
+2.宏定义是用宏来代替字符串也就是做简单的置换，不做正确性检查，如果写成
+
+#define PI 3.l4l6926
+
+即把1写成了字母l但是预处理照常代入不做任何语法检查!!
+
+
+2.1.2带参数的宏定义
+
+#define 宏名(参数) 字符串
+
+#define S(a,b) a*b
+
+area = S(a,b);
+
+#define MAX(x,y) (x)>(y) ? (x)y)
+
+
+3.typedef和#define的区别
+
+一般来说typedef 能正确处理指针类型
+
+typedef char *String1;
+
+#define String2 char *
+
+String1 s1,s2;
+
+String2 s3,s4;
+
+s1,s2,s3 被定义为了char* ，但s4却被定义为了char型

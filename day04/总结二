@@ -1,0 +1,40 @@
+2.typedef与#define
+
+2.1.typedef
+
+C语言除了直接使用标准的类型名(如 int char float double)和自己声明的结构体、共用体、指针、枚举类型外，还可以用typedef声明新的类型名来代替现有的类型名。
+
+typedef unsigned char u8;
+
+typedef unsigned int u16;
+
+u8 count;
+
+u16 time;
+
+typedef struct
+
+{
+
+u8 month;
+
+u8 day;
+
+u16 year;
+
+}DATE;
+
+DATE brithday;
+
+
+总结一下，声明新的类型名的方法：
+
+    先按定义变量的方法写出定义体(如 unsigned int i)
+
+    在变量名换成新的变量名(如将 i换成u16)
+
+    在最前面加上typedef (typedef unsigned int u16)
+
+    然后用新类型名去定义变量
+
+

@@ -1,0 +1,10 @@
+wait() 方法应该在循环调用，因为当线程获取到CPU 开始执行的时候，其他条件可能还没有满足，所以在处理前，循环检测条件是否满足会更好。下面是一段标准的使用 wait 和 notify 方法的代码：
+
+
+// The standard idiom for using the waitmethodsynchronized (obj) {while (condition does not hold)
+
+obj.wait(); // (Releases lock, andreacquires on wakeup)... // Perform action appropriate to condition}
+
+参见 EffectiveJava 第 69 条，获取更多关于为什么应该在循环中来调用 wait 方法的内容。
+
+

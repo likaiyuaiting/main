@@ -1,0 +1,157 @@
+用到的工具和技术.
+
+1.微信web开发工具小程序版
+
+2.Myeclipse 2014
+
+3.WebSocket
+
+4.Maven 3.3.9
+
+5.Tomcat 7
+步骤
+
+   1.安装配置Maven,使用Myeclipse创建web project 使用Maven项目结构. 具体步骤:点击打开链接
+
+   2.打开微信web开发工具,由于是内部开发测试,故不要填写 appID, 创建新项目,把项目放在Maven项目目录下  src/main/webapp/项目名
+
+   3.创建Websocket 实现握手通信.
+
+以下代码均来自网络资料.
+
+java服务器端:
+    package websocketTest;  
+      
+    import java.io.IOException;  
+    import java.util.concurrent.CopyOnWriteArraySet;  
+      
+    import javax.websocket.*;  
+    import javax.websocket.server.ServerEndpoint;  
+      
+    /** 
+     * @ServerEndpoint 注解是一个类层次的注解，它的功能主要是将目前的类定义成一个websocket服务器端, 
+     * 注解的值将被用于监听用户连接的终端访问URL地址,客户端可以通过这个URL来连接到WebSocket服务器端 
+     */  
+    @ServerEndpoint("/websocket")  
+    public class TestWebSocket {  
+        //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。  
+        private static int onlineCount = 0;  
+      
+        //concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。若要实现服务端与单一客户端通信的话，可以使用Map来存放，其中Key可以为用户标识  
+        private static CopyOnWriteArraySet<TestWebSocket> webSocketSet = new CopyOnWriteArraySet<TestWebSocket>();  
+      
+        //与某个客户端的连接会话，需要通过它来给客户端发送数据  
+        private Session session;  
+      
+        /** 
+         * 连接建立成功调用的方法 
+         * @param session  可选的参数。session为与某个客户端的连接会话，需要通过它来给客户端发送数据 
+         */  
+        @OnOpen  
+        public void onOpen(Session session){  
+            this.session = session;  
+            webSocketSet.add(this);     //加入set中  
+            addOnlineCount();           //在线数加1  
+            System.out.println("有新连接加入！当前在线人数为" + getOnlineCount());  
+        }  
+      
+        /** 
+         * 连接关闭调用的方法 
+         */  
+        @OnClose  
+        public void onClose(){  
+            webSocketSet.remove(this);  //从set中删除  
+            subOnlineCount();           //在线数减1  
+            System.out.println("有一连接关闭！当前在线人数为" + getOnlineCount());  
+        }  
+      
+        /** 
+         * 收到客户端消息后调用的方法 
+         * @param message 客户端发送过来的消息 
+         * @param session 可选的参数 
+         */  
+        @OnMessage  
+        public void onMessage(String message, Session session) {  
+            System.out.println("来自客户端的消息:" + message);  
+            //群发消息  
+            for(TestWebSocket item: webSocketSet){  
+                try {  
+                    item.sendMessage(message);  
+                } catch (IOException e) {  
+                    e.printStackTrace();  
+                    continue;  
+                }  
+            }  
+        }  
+      
+        /** 
+         * 发生错误时调用 
+         * @param session 
+         * @param error 
+         */  
+        @OnError  
+        public void onError(Session session, Throwable error){  
+            System.out.println("发生错误");  
+            error.printStackTrace();  
+        }  
+      
+        /** 
+         * 这个方法与上面几个方法不一样。没有用注解，是根据自己需要添加的方法。 
+         * @param message 
+         * @throws IOException 
+         */  
+        public void sendMessage(String message) throws IOException{  
+            this.session.getBasicRemote().sendText(message);  
+            //this.session.getAsyncRemote().sendText(message);  
+        }  
+      
+        public static synchronized int getOnlineCount() {  
+            return onlineCount;  
+        }  
+      
+        public static synchronized void addOnlineCount() {  
+            TestWebSocket.onlineCount++;  
+        }  
+      
+        public static synchronized void subOnlineCount() {  
+            TestWebSocket.onlineCount--;  
+        }  
+    }  
+    
+    微信小程序客户端:  
+    
+    [javascript] view plain copy
+
+      <pre name="code" class="javascript">var app = getApp()  
+    Page({  
+      onLoad:function(){  
+      
+        wx.connectSocket({  
+          url: "ws://localhost:8080/TestYMG/websocket",  
+        })  
+        wx.onSocketOpen(function() {  
+          console.log('WebSocket连接已经打开!')  
+        wx.sendSocketMessage({  
+          data: 'HELLO,WORLD'+Math.random()*0XFFFFFF.toString()  
+        })  
+        });  
+       wx.onSocketMessage(function(data) {  
+         console.log(data);  
+       });</pre><pre name="code" class="javascript">     //监听是否关闭  
+       wx.onSocketClose(function() {  
+         console.log('WebSocket连接已经关闭!')  
+       });  
+      },</pre><pre name="code" class="javascript">    //手动关闭连接  
+      setclose:function(e){  
+        console.log('WebSocket连接正在关闭!')  
+        wx.closeSocket();  
+      
+      }  
+      
+        
+    })  
+    </pre><br>  
+    <p></p>  
+    <pre></pre>  
+    <p></p>  
+                    

@@ -1,0 +1,45 @@
+1. Synchronized
+
+在方法级别  public synchronized ….
+
+在代码块   synchronized(对象){}
+
+1. 当synchronized作用在方法上的时候，锁住的就是这个对象的实例 synchronized(this)
+
+2. 当synchronized作用在静态方法上的时候，锁住的是这个对象的Class实例，因为class数据存储在永久区，所以静态方法锁相当于全局锁
+
+3. 当synchronized作用在某一个对象实例上的时候，锁住的是对应的代码块
+
+a) 运行规则
+
+1. 当两个并发线程访问同一个对象中的synchronized(obj) 同步块，只能有一个线程得到执行，另外一个线程必须等待前一个线程执行完毕
+
+2. 当一个线程访问synchronized(this) 同步块时， 另一个线程仍然可以访问当前对象内的非synchroinzed(this)同步块代码
+
+3. 如果一个线程访问当前对象中的一个synchroinzed(this)同步块，其他线程中对当前对象中其他的synchroinzed同步块代码访问将被阻塞
+
+4. 同步是一个耗性能的操作，因此我们尽量减少同步的内容，最好不要加载整个方法上
+
+2. Lock
+
+Jdk5以后， 增加了一个java.util.concurrent包
+
+通过Lock来实现多线程的同步锁，好处是非常灵活。
+
+ReentrantLock 会由最近成功获得锁定并且还没有释放该锁的线程拥有。当锁没有被另一个线程拥有时，调用lock线程讲成功返回该锁定。
+
+如果当前线程已经拥有了该锁，则会立即返回
+
+公平机制，提供了一个可选的公平锁参数。
+
+常用方法：
+
+lock()  如果被其他线程锁定，则会等待锁释放
+
+tryLock() 返回boolean值， 如果已经被lock，则会返回false，且不会等待
+
+ 
+
+lock和synchroinzed
+
+1. 实现层面， synchronized由jvm实现， lock jdk实现

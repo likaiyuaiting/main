@@ -1,0 +1,83 @@
+#include <cstdio>
+#include <cstring>
+#include <string>
+#include <set>
+#include <sstream>
+#include <cmath>
+#include <iostream>
+#include <stack>
+#include <queue>
+#include <vector>
+#include <algorithm>
+#define mem(a,b) memset(a,b,sizeof(a))
+#define inf 0x3f3f3f3f
+#define debug() puts("what the fuck!!!")
+#define ll long long
+using namespace std;
+const int N=100000*32;
+struct dicTree
+{
+    struct Node
+    {
+        int next[2];
+    } T[N];
+    int root,sz;
+    int newnode()
+    {
+        T[sz].next[0]=T[sz++].next[1]=-1;
+        return sz-1;
+    }
+    void init()
+    {
+        sz=0;
+        root=newnode();
+    }
+    void insert(int x)
+    {
+        int now=root;
+        for(int i=30; i>=0; i--)
+        {
+            int to=(x>>i)&1;
+            if(T[now].next[to]==-1)
+                T[now].next[to]=newnode();
+            now=T[now].next[to];
+        }
+    }
+    int find(int x)
+    {
+        int now=root,res=0;
+        for(int i=30; i>=0; i--)
+        {
+            int to=(x>>i)&1;
+            if(T[now].next[to^1]!=-1)//如果存在相反的
+                to^=1;
+            if(to)
+                res=res|(1<<i);
+            now=T[now].next[to];
+        }
+        return res;
+    }
+};
+dicTree T;
+int main()
+{
+    int t,n,m,q=1,x;
+    scanf("%d",&t);
+    while(t--)
+    {
+        T.init();
+        scanf("%d%d",&n,&m);
+        for(int i=0; i<n; i++)
+        {
+            scanf("%d",&x);
+            T.insert(x);
+        }
+        printf("Case #%d:\n",q++);
+        for(int i=0; i<m; i++)
+        {
+            scanf("%d",&x);
+            printf("%d\n",T.find(x));
+        }
+    }
+    return 0;
+}

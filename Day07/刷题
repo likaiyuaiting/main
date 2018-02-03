@@ -1,0 +1,183 @@
+描述
+
+    众所周知，蒜蒜是一名热爱工作的好员工，他觉得时间就是金钱，做事情总是争分夺秒。
+
+    这天晚上，蒜蒜一个人去吃晚饭。不巧的是，吃完饭以后就开始下雨了，蒜蒜并没有带雨伞出来。但是蒜蒜热爱工作，工作使他快乐，他要尽快赶回去写代码。
+
+    蒜蒜的公司在中关村，中关村这边地形复杂，有很多天桥、地下通道和马路交错在一起。其中，地下通道是可以避雨的，天桥和马路都没办法避。可以把中关村抽象成为
+    nn 个点的地图（顶点编号为 11 到 nn），其中有 m_1m ​1 ​​ 条地下通道，有 m_2m ​2 ​​
+    条马路或者天桥，其中地下通道的长度为 11。蒜蒜吃饭的地方在 11 点，公司在 nn
+    点。当然，蒜蒜虽然爱工作心切，但是他更不想淋很多雨，同时也不想浪费很多时间。于是他折中了一下——在保证他回到公司所走的路程总和小于等于 LL
+    的情况下，他希望淋雨的路程和尽量的少。
+
+    请你赶紧帮热爱工作的蒜蒜规划一条路径吧，不要再让他浪费时间。
+
+输入格式
+
+    第一行输入测试组数 T(1 \le T \le 20)T(1≤T≤20)。
+
+    接下来 TT 组数据。
+
+    每一组数据的第一行输入四个整数 n(2 \le n \le 100)n(2≤n≤100)，m_1(0 \le m_1 \le 50)m ​1
+    ​​ (0≤m ​1 ​​ ≤50)，m_2(0 \le m_2 \le 5000)m ​2 ​​ (0≤m ​2 ​​
+    ≤5000)，L(1 \le L \le 10^8)L(1≤L≤10 ​8 ​​ )。
+
+    接下里 m_1m ​1 ​​ 行，每行输入两个整数 a, b(1 \le a, b \le n)a,b(1≤a,b≤n)，表示 aa 和
+    bb 之间有一条地下通道。
+
+    接下里 m_2m ​2 ​​ 行，每行输入三个整数 u, v(1 \le u, v \le n), c(1 \le c \le
+    10^6)u,v(1≤u,v≤n),c(1≤c≤10 ​6 ​​ )，表示 uu 和 vv 之间有一条长度为 cc 的马路或者天桥。
+
+    所有路径都是双向的。
+
+输出格式
+
+    对于每组数据，如果有满足要求的路径，输出一个整数，表示淋雨的路程长度，否则输出 -1−1。
+
+样例输入
+
+3
+4 2 2 6
+1 2
+2 3
+1 4 5
+3 4 4
+4 2 2 5
+1 2
+2 3
+1 4 5
+3 4 4
+4 2 2 4
+1 2
+2 3
+1 4 5
+3 4 4
+
+样例输出
+
+4
+5
+-1
+
+思路
+
+带约束条件的最短路，需要用邻接表建两个图，然后定义:
+
+    dis[i]：表示从1~i淋雨的长度
+
+然后在spfa遍历的时候，分两次走天桥和地下通道，在走天桥的时候，更新dis长度的时候要加上那两点的距离，在走地下通道的时候不加距离，最后加一个条件判断len+w<=L,然后判断结果和L的取值即可
+
+
+
+#include <cstdio>
+#include <cstring>
+#include <string>
+#include <set>
+#include <sstream>
+#include <cmath>
+#include <iostream>
+#include <stack>
+#include <queue>
+#include <vector>
+#include <algorithm>
+#define mem(a,b) memset(a,b,sizeof(a))
+#define inf 0x3f3f3f3f
+#define debug() puts("what the fuck!!!")
+#define ll long long
+using namespace std;
+const int N=5000*2;
+int n,m1,m2,L;
+struct EDGE
+{
+    void init()
+    {
+        mem(first,-1);
+        len=1;
+    }
+    int first[N],len;
+    struct node
+    {
+        int u,v,w,next;
+    } G[N];
+    void add_edge(int u,int v,int w)
+    {
+        G[len].v=v,G[len].w=w;
+        G[len].next=first[u];
+        first[u]=len++;
+    }
+};
+EDGE T1,T2;//1代表地下通道，2代表天桥
+struct data
+{
+    int pos;
+    int len;
+};
+int dis[N];
+void spfa()
+{
+    for(int i=1; i<=n; i++)
+        dis[i]=inf;
+    dis[1]=0;
+    data now,to;
+    now.len=0;
+    now.pos=1;
+    queue<data>q;
+    q.push(now);
+    while(!q.empty())
+    {
+        now=q.front();
+        q.pop();
+        for(int i=T2.first[now.pos]; i!=-1; i=T2.G[i].next)
+        {
+            int v=T2.G[i].v,w=T2.G[i].w;
+            if(dis[v]>dis[now.pos]+w&&now.len+w<=L)
+            {
+                dis[v]=dis[now.pos]+w;
+                to.pos=v;
+                to.len=now.len+w;
+                q.push(to);
+            }
+        }
+        for(int i=T1.first[now.pos]; i!=-1; i=T1.G[i].next)
+        {
+            int v=T1.G[i].v,w=T1.G[i].w;
+            if(dis[v]>dis[now.pos]+w&&now.len+1<=L)
+            {
+                dis[v]=dis[now.pos];
+                to.pos=v;
+                to.len=now.len+1;
+                q.push(to);
+            }
+        }
+    }
+}
+int main()
+{
+    int t,a,b,c;
+    scanf("%d",&t);
+    while(t--)
+    {
+        T1.init();
+        T2.init();
+        scanf("%d%d%d%d",&n,&m1,&m2,&L);
+        for(int i=0; i<m1; i++)
+        {
+            scanf("%d%d",&a,&b);
+            T1.add_edge(a,b,1);
+            T1.add_edge(b,a,1);
+        }
+        for(int i=0; i<m2; i++)
+        {
+            scanf("%d%d%d",&a,&b,&c);
+            T2.add_edge(a,b,c);
+            T2.add_edge(b,a,c);
+        }
+        spfa();
+        if(dis[n]>L)
+            puts("-1");
+        else
+            printf("%d\n",dis[n]);
+    }
+    return 0;
+}
+

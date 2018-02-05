@@ -1,0 +1,15 @@
+String的 intern()方法就是扩充常量池的 一个方法；当一个String实例str调用intern()方法时，Java 查找常量池中 是
+
+否有相同Unicode的字符串常量，如果有，则返回其的引用，如果没有，则在常 量池中增加一个Unicode等于str的字
+
+符串并返回它的引用。      
+String s0 = "你好"; 
+        String s1 = new String("你好"); 
+        String s2 = new String("你好"); 
+        s1.intern(); //虽然执行了s1.intern(),但它的返回值没有赋给s1，所以s1没变
+        s2 = s2.intern(); //把常量池中"你好"的引用赋给s2 
+        System.out.println( s0 == s1); //flase
+        System.out.println( s0 == s1.intern() ); //true//说明s1.intern()返回的是常量池中"你好"的引用
+        System.out.println( s0 == s2 ); //true
+
+		

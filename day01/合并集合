@@ -2,6 +2,7 @@
 #include<stdlib.h>
 int main(void)
 {
+	
 	int i,j=0,Date1[] = { 2, 3, 5, 7, 9 }, Date2[] = { 1, 4, 7, 8, 9, 10 },Date3[10],Date4[10];
 	int min;
 	for (i = 0; i < 10; i++)
